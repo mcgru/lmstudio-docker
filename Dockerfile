@@ -1,17 +1,29 @@
+ARG BASE_IMAGE=nvidia/cuda:12.8.1-cudnn-devel-ubuntu22.04
 
-ARG baseimage=nvidia/cuda:12.8.1-cudnn-devel-ubuntu22.04
+############################################
+FROM ${BASE_IMAGE} AS extract
 
-FROM ${baseimage} AS baseimage
-ENV LANG C.UTF-8
-ENV LC_ALL C.UTF-8
+COPY ./LM-Studio* /data/lms/
+RUN <<eot
+    set -eux
+    chmod ugo+x /data/lms/*.AppImage
+    ls -la /data/lms/*.AppImage ||:
+    /data/lms/*.AppImage --appimage-extract
+eot
 
+#########################################################
+FROM ${BASE_IMAGE} AS base
 
+ENV LANG=C.UTF-8
+ENV LC_ALL=C.UTF-8
 ENV TZ="Etc/UTC"
 
 ARG DEBIAN_FRONTEND=noninteractive
+
 # Build arguments
 ARG ARG_UID=1000
 ARG ARG_GID=1000
+ENV DISPLAY=:99
 
 RUN <<eot
     set -eux
@@ -24,32 +36,21 @@ RUN <<eot
     DEBIAN_FRONTEND=noninteractive  apt -qy install --no-install-recommends \
         -o APT::Install-Recommends=false \
         -o APT::Install-Suggests=false \
-        libfuse2 kmod fuse libglib2.0-0 libnss3 libatk1.0-0 libatk-bridge2.0-0 libcups2 libdrm2 libgtk-3-0 libgbm1 libasound2 xserver-xorg xvfb x11vnc
+        libfuse2 kmod fuse libglib2.0-0 libnss3 libatk1.0-0 libatk-bridge2.0-0 libcups2 libdrm2 libgtk-3-0 libgbm1 libasound2 xserver-xorg xvfb x11vnc curl
     mkdir -p /root/.vnc && x11vnc -storepasswd test123 /root/.vnc/passwd
+    rm -rf /var/lib/apt/lists/* ||:
 eot
 
-ENV DISPLAY=:99
+COPY --from=extract /squashfs-root /squashfs-root
 
-#########################
-
-FROM baseimage AS final
-
-ADD ./LM-Studio* /data/lms/
-ADD ./http-server-config.json /http-server-config.json
-
-RUN <<eot
-    set -eux
-    chmod ugo+x /data/lms/*.AppImage
-    /data/lms/*.AppImage --appimage-extract
-eot
-
-
-ADD ./docker-entrypoint.sh /usr/local/bin/
-ADD ./docker-healthcheck.sh /usr/local/bin/
+COPY ./http-server-config.json /http-server-config.json
+COPY ./docker-entrypoint.sh    /usr/local/bin/
+COPY ./docker-healthcheck.sh   /usr/local/bin/
 
 # Ensure the scripts are executable
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh && \
     chmod +x /usr/local/bin/docker-healthcheck.sh
+
 # Setup the healthcheck
 HEALTHCHECK --interval=1m --timeout=10s --start-period=1m \
   CMD /bin/bash /usr/local/bin/docker-healthcheck.sh || exit 1

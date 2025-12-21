@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Send a request to the specified URL
-response=$(curl --write-out '%{http_code}' --silent --output /dev/null http://localhost:1234/v1)
+response=$(curl --write-out '%{http_code}' --silent --output /dev/null http://127.0.0.1:1234/v1)
 
 # If the HTTP response code is 200 (OK), the server is up
 if [ "$response" -eq 200 ]; then

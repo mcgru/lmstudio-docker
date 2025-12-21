@@ -8,12 +8,14 @@ services:
     image: lmstudio:latest
     container_name: lmstudio
     restart: unless-stopped
-    build:
-      context: "$HOME/Development/LMStudio"
+#    build:
+#      context: "$HOME/LMStudio"
     ports:
       - "1234:1234"
     volumes:
-      - "$HOME/Development/LMStudio/data:/root/.cache/lm-studio/models"
+      - ./data:/root/.cache/lm-studio/models
+      - ./http-server-config.json:/http-server-config.json:ro
+      - ./docker-entrypoint.sh:/usr/local/bin/docker-entrypoint.sh:ro
     environment:
       - CONTEXT_LENGTH=${CONTEXT_LENGTH:-131072}
       - MODEL_PATH=${MODEL_PATH:-Qwen/Qwen2.5-Coder-14B-Instruct-GGUF}
@@ -23,7 +25,7 @@ services:
     #     reservations:
     #       devices:
     #         - capabilities: [gpu]
-    command: ["/start_services.sh"]
+##    command: ["/start_services.sh"]
     networks:
       - homelab_homelabnet
     labels:

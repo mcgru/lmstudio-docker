@@ -6,7 +6,6 @@ sleep 2
 # -----------------------------------
 echo 'alias lms="~/.cache/lm-studio/bin/lms"' > ~/.bashrc
 
-cp -f /http-server-config.json /root/.cache/lm-studio/.internal/http-server-config.json
 
 /squashfs-root/lm-studio --no-sandbox &
 sleep 30
@@ -19,13 +18,16 @@ sleep 5
 #~/.cache/lm-studio/bin/lms load  --ttl 3600 --context-length ${CONTEXT_LENGTH:-16384} ${MODEL_IDENTIFIER} &
 for m in ${MODEL_IDENTIFIER} ; do
 ##~/.cache/lm-studio/bin/lms load  --ttl 3600 --context-length ${CONTEXT_LENGTH:-16384} $m &
-~/.cache/lm-studio/bin/lms load  --ttl 60000 --context-length ${CONTEXT_LENGTH:-16384} -y $m
+~/.cache/lm-studio/bin/lms load ${GPU_USAGE:+ --gpu $GPU_USAGE} --ttl 60000 --context-length ${CONTEXT_LENGTH:-16384} -y $m
 done
 
 sleep 20
 
 ### ???
+cp -f /http-server-config.json /root/.cache/lm-studio/.internal/http-server-config.json
 x11vnc -display :99 -forever -rfbauth /root/.vnc/passwd -quiet -listen 0.0.0.0 -xkb
+
+ln -sf ~/.cache/lm-studio/bin/lms /usr/local/bin/lms  ||:
 
 ### ???
 /bin/bash

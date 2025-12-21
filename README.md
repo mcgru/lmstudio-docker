@@ -21,17 +21,21 @@ Before you begin, ensure that your system meets the following requirements:
 2. Review the `docker-compose.yml` file to ensure it meets your requirements. Adjust any environment variables or paths as necessary.
 3. Download the LMStudio installer:
     ```bash
-    wget https://installers.lmstudio.ai/linux/x64/0.3.36-1/LM-Studio-0.3.36-1-x64.AppImage
+    wget https://lmstudio.ai/download/latest/linux/x64 -O LM-Studio-latest.AppImage
     ```
+    (originally was: wget https://installers.lmstudio.ai/linux/x64/0.3.36-1/LM-Studio-0.3.36-1-x64.AppImage )
 4. Build and run the Docker containers using:
     ```bash
-    docker-compose up -d --build
+    docker compose up -d --build
     ```
 
 ## Configuration
 
 Configuration settings are managed via environment variables and configuration files as follows:
 - **Environment Variables**: Set these in the Docker Compose file or directly in the `.env` file if used.
+  - `DOMAIN_NAME`: Domain name of your host (need for traefik labels) (originally was 'lmstudio.${DOMAIN}).
+
+  - `GPU_USAGE`: Defines usage of GPU. [0.0-1.0|max|off] or empty.
   - `CONTEXT_LENGTH`: Defines the context length for model interactions.
   - `MODEL_PATH`: Path to the specific language model to be loaded.
   - `MODEL_IDENTIFIER`: Identifier for the loaded model.
@@ -40,26 +44,61 @@ Configuration settings are managed via environment variables and configuration f
 ## Running the Services
 To start the services defined in `docker-compose.yml`, use the following command from the project directory:
 ```bash
-docker-compose up -d
+docker compose up -d
 ```
 This command will run the containers in detached mode, allowing you to continue using your terminal without interruption.
 
 To stop the services, use:
 ```bash
-docker-compose down
+docker compose down
 ```
+
+## Setup models
+
+Go inside continer and set up models via `lms` utility:
+```bash
+docker exec -it lmstudio  lms
+```
+
+### Get models
+Get remote list of models , choose and download:
+```bash
+docker exec -it lmstudio  lms get
+```
+
+### Load models
+Load (choice) locally downloaded models to the memory(?) LM Studio:
+```bash
+docker exec -it lmstudio  lms load
+```
+
+### Check models are exported
+Load (choice) locally downloaded models to the memory(?) LM Studio:
+```bash
+docker exec -it lmstudio  curl http://127.0.0.1:1234/v1/models
+```
+
 
 ## Troubleshooting
 If you encounter issues during setup or usage:
 1. Check the logs for errors:
    ```bash
-   docker-compose logs -f lmstudio
+   docker compose logs -f lmstudio
    ```
 2. Ensure all required environment variables are set correctly in the Docker Compose file or `.env` file.
 3. Verify that the container is running:
    ```bash
    docker ps
    ```
+4. To check services via lms-cli, use:
+```bash
+docker exec -it lmstudio  lms    ## ls, load, status, etc...
+```
+5. With poor computing power (RAM), the problem may occur with auto-loading models.
+So after container restart, reload models manually:
+```bash
+docker exec -it lmstudio  lms load
+```
 
 ## Contributing
 Contributions to this project are welcome. Please open an issue for bugs or feature requests and submit a pull request with proposed changes. For major changes, please discuss them in advance.
