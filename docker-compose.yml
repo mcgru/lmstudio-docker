@@ -29,5 +29,5 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.lmstudio.entrypoints=http"
-      - "traefik.http.routers.lmstudio.rule=Host(`lmstudio.${DOMAIN}`)"
+      - "traefik.http.routers.lmstudio.rule=Host(`${DOMAIN_NAME}`)"
       - "traefik.http.services.lmstudio.loadbalancer.server.port=1234"

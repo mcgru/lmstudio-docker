@@ -15,13 +15,13 @@ Before you begin, ensure that your system meets the following requirements:
 ## Getting Started
 1. Clone this repository to your local machine:
     ```bash
-    git clone https://github.com/n0mer1/lmstudio-docker.git LMStudio
+    git clone https://github.com/mcgru/lmstudio-docker.git LMStudio
     cd LMStudio
     ```
 2. Review the `docker-compose.yml` file to ensure it meets your requirements. Adjust any environment variables or paths as necessary.
 3. Download the LMStudio installer:
     ```bash
-    wget https://installers.lmstudio.ai/linux/x64/0.3.14-5/LM-Studio-0.3.14-5-x64.AppImage
+    wget https://installers.lmstudio.ai/linux/x64/0.3.36-1/LM-Studio-0.3.36-1-x64.AppImage
     ```
 4. Build and run the Docker containers using:
     ```bash
