@@ -8,8 +8,8 @@ services:
     image: lmstudio:latest
     container_name: lmstudio
     restart: unless-stopped
-#    build:
-#      context: "$HOME/LMStudio"
+    build:
+      context: "$HOME/LMStudio"
     ports:
       - "1234:1234"
     volumes:
