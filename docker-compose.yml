@@ -1,8 +1,4 @@
 
-networks:
-  homelab_homelabnet:
-    external: true
-
 services:
   lmstudio:
     image: lmstudio:latest
@@ -25,11 +21,17 @@ services:
     #     reservations:
     #       devices:
     #         - capabilities: [gpu]
-##    command: ["/start_services.sh"]
-    networks:
-      - homelab_homelabnet
+###    command: ["/start_services.sh"]
+####### if you need distinct network - uncomment here and lower
+#    networks:
+#      - homelab_homelabnet
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.lmstudio.entrypoints=http"
       - "traefik.http.routers.lmstudio.rule=Host(`${DOMAIN_NAME}`)"
       - "traefik.http.services.lmstudio.loadbalancer.server.port=1234"
+
+#networks:
+#  homelab_homelabnet:
+#    external: true
+
