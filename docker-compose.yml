@@ -16,11 +16,19 @@ services:
       - CONTEXT_LENGTH=${CONTEXT_LENGTH:-131072}
       - MODEL_PATH=${MODEL_PATH:-Qwen/Qwen2.5-Coder-14B-Instruct-GGUF}
       - MODEL_IDENTIFIER=${MODEL_IDENTIFIER:-qwen2.5-coder-14b-instruct}
-    # deploy:
-    #   resources:
-    #     reservations:
-    #       devices:
-    #         - capabilities: [gpu]
+
+      - NVIDIA_VISIBLE_DEVICES=all
+      - CUDA_VISIBLE_DEVICES=0
+
+#    runtime: nvidia
+#    deploy:
+#      resources:
+#        reservations:
+#          devices:
+#            - capabilities: [gpu]
+#              driver: nvidia
+#              count: 2
+
 ###    command: ["/start_services.sh"]
 ####### if you need distinct network - uncomment here and lower
 #    networks:
