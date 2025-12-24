@@ -24,3 +24,16 @@ sudo apt-get update
 sudo apt-get install -y nvidia-container-toolkit
 ```
 
+## Restart docker daemon
+
+```bash
+sudo systemctl restart docker
+```
+
+
+## Test
+
+
+```bash
+docker run --gpus all nvidia/cuda:13.1.0-devel-ubuntu24.04 nvidia-smi
+```
