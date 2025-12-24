@@ -23,11 +23,10 @@ done
 
 sleep 20
 
-### ???
+ln -sf ~/.cache/lm-studio/bin/lms /usr/local/bin/lms  ||:
 cp -f /http-server-config.json /root/.cache/lm-studio/.internal/http-server-config.json
 x11vnc -display :99 -forever -rfbauth /root/.vnc/passwd -quiet -listen 0.0.0.0 -xkb
 
-ln -sf ~/.cache/lm-studio/bin/lms /usr/local/bin/lms  ||:
 
 ### ???
 /bin/bash
