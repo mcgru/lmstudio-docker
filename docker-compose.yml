@@ -2,12 +2,12 @@
 services:
   lmstudio:
     image: lmstudio:latest
-    container_name: lmstudio
+    container_name: ${LMS_IMAGE:-lms}
     restart: unless-stopped
     build:
       context: "$HOME/LMStudio"
     ports:
-      - "1234:1234"
+      - "127.0.0.1:1234:1234"
     volumes:
       - ./data:/root/.cache/lm-studio/models
       - ./http-server-config.json:/http-server-config.json:ro
@@ -16,18 +16,18 @@ services:
       - CONTEXT_LENGTH=${CONTEXT_LENGTH:-131072}
       - MODEL_PATH=${MODEL_PATH:-Qwen/Qwen2.5-Coder-14B-Instruct-GGUF}
       - MODEL_IDENTIFIER=${MODEL_IDENTIFIER:-qwen2.5-coder-14b-instruct}
-
+      - GPU_USAGE=${GPU_USAGE:-0.8}
       - NVIDIA_VISIBLE_DEVICES=all
       - CUDA_VISIBLE_DEVICES=0
 
 #    runtime: nvidia
-#    deploy:
-#      resources:
-#        reservations:
-#          devices:
-#            - capabilities: [gpu]
-#              driver: nvidia
-#              count: 2
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - capabilities: [gpu]
+              driver: nvidia
+              count: 1
 
 ###    command: ["/start_services.sh"]
 ####### if you need distinct network - uncomment here and lower

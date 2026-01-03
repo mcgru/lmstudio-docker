@@ -13,6 +13,7 @@ sleep 30
 
 
 sleep 5
+ln -sf ~/.cache/lm-studio/bin/lms /usr/local/bin/lms  ||:
 ### ~/.cache/lm-studio/bin/lms get ${MODEL_PATH}
 ##~/.cache/lm-studio/bin/lms load --gpu 0.3 --ttl 3600 --context-length ${CONTEXT_LENGTH:-16384} ${MODEL_IDENTIFIER} &
 #~/.cache/lm-studio/bin/lms load  --ttl 3600 --context-length ${CONTEXT_LENGTH:-16384} ${MODEL_IDENTIFIER} &
@@ -23,7 +24,6 @@ done
 
 sleep 20
 
-ln -sf ~/.cache/lm-studio/bin/lms /usr/local/bin/lms  ||:
 cp -f /http-server-config.json /root/.cache/lm-studio/.internal/http-server-config.json
 x11vnc -display :99 -forever -rfbauth /root/.vnc/passwd -quiet -listen 0.0.0.0 -xkb
 
